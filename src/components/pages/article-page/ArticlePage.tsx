@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link as RouterLink } from 'react-router-dom';
 import {useState, useEffect} from 'react';
 import { Container, Paper, Link } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -60,7 +60,8 @@ const View = ({title, description, image} : ArticleInterface) => {
             >
                 <div className="article-page__link">
                     <Link 
-                        href="/" 
+                        component={RouterLink}
+                        to="/" 
                         underline="hover" 
                         color="#363636"
                         sx={{fontWeight: "bold"}}

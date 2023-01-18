@@ -22,7 +22,9 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme = {theme}>
       <CssBaseline/>
-      <Router>
+      <Router 
+    //  basename='/projects/codebridge-test-task'
+      >
         <Routes>
           <Route path='/' element={<HomePage/>} errorElement={<Error/>}/>
           <Route path='/:id' element={<ArticlePage/>} errorElement={<Error/>}/>                
