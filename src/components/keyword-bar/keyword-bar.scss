@@ -1,0 +1,12 @@
+.keyword-bar{
+    &__icon{
+        position: relative;
+        top: 3px;
+    }
+
+    &__title{
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #363636;
+    }
+}
