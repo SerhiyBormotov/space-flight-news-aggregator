@@ -22,7 +22,6 @@ const theme = createTheme({
 
 const App: React.FC = () => {
   return (
-<<<<<<< HEAD
     <Provider store={store}>
       <ThemeProvider theme = {theme}>
         <CssBaseline/>
@@ -37,18 +36,6 @@ const App: React.FC = () => {
         </Router>          
       </ThemeProvider>
     </Provider>
-=======
-    <ThemeProvider theme = {theme}>
-      <CssBaseline/>
-      <Router>
-        <Routes>
-          <Route path='/' element={<HomePage/>} errorElement={<Error/>}/>
-          <Route path='/:id' element={<ArticlePage/>} errorElement={<Error/>}/>                
-          <Route path="*" element={<Error/>}/>              
-        </Routes>
-      </Router>          
-    </ThemeProvider>
->>>>>>> parent of 888fd23 (Fix Link Bug)
   );
 }
 
