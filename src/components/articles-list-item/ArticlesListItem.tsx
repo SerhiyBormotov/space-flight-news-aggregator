@@ -1,5 +1,4 @@
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import {Link as RouterLink} from 'react-router-dom';
 import { Card, CardMedia, Link, CardContent} from '@mui/material';
 import Highlighter  from 'react-highlight-words';
 import './articles-list-item.scss';
@@ -86,8 +85,7 @@ const ArticlesListItem = ({article, keywords = []}: ArticlesListItemProp) => {
                 </div>
                 <div className="articles-list-item__actions">
                     <Link 
-                        component={RouterLink}
-                        to={`/${id}`} 
+                        href={`${id}`} 
                         underline="hover" 
                         color="#363636"
                         sx={{fontWeight: "bold"}}
