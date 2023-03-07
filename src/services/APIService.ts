@@ -5,7 +5,7 @@ export interface ArticleInterface {
     image: string,
     title: string,
     description: string,
-    published: Date
+    published: string
 }
 
 interface APIRequestInterface {
@@ -20,10 +20,14 @@ interface APIRequestInterface {
 const useAPIService = () => {
     const _apiBase: string = "https://api.spaceflightnewsapi.net/v3/";
 
-    const {loading, error, getRequest} = useHttp();
+    const { getRequest, abortRequestSafe} = useHttp();
+
+    let oldKeywords: string = "";
  
     const getArticles = async (keywords:Array<string>, offset:number = 0): Promise<Array<ArticleInterface>> => {
-        console.log("request");
+        console.log('pending');
+        abortRequestSafe(oldKeywords);    
+        
         let limit:number = 0;
         if (keywords.length === 0) {        //App doesn`t load all the articles if there are no filter keywords
             limit = 100;
@@ -36,8 +40,10 @@ const useAPIService = () => {
             queryTitleText += `&title_contains=${item}`;
             queryDescriptionText += `&summary_contains=${item}`;
         });
-        const resTitle = await getRequest<Array<APIRequestInterface>>(queryTitleText),
-              resDescription = await getRequest<Array<APIRequestInterface>>(queryDescriptionText);
+        console.log("request");
+        oldKeywords = keywords.join(' ');
+        const resTitle = await getRequest<Array<APIRequestInterface>>(queryTitleText, oldKeywords),
+              resDescription = await getRequest<Array<APIRequestInterface>>(queryDescriptionText, oldKeywords);
         return [...resTitle.map(_transformData), ...resDescription.map(_transformData).filter(item => resTitle.every(elem => item.id !== elem.id))];       
     }
 
@@ -56,12 +62,12 @@ const useAPIService = () => {
             title: data.title,
             image: data.imageUrl,
             description: data.summary,
-            published: new Date(data.publishedAt)
+            published: data.publishedAt
 
         }
     }
 
-    return {loading, error, getArticles, getArticlesCount, getOneArticle}
+    return {getArticles, getArticlesCount, getOneArticle}
 }
 
 export default useAPIService;

@@ -30,6 +30,7 @@ type ArticlesListItemProp = {
 } ;
 const ArticlesListItem = ({article, keywords = []}: ArticlesListItemProp) => {
     let {id, description, title, published, image} = article;
+    const publishedDate = new Date(published);
 
 
     if (description.length > 200) {
@@ -68,7 +69,7 @@ const ArticlesListItem = ({article, keywords = []}: ArticlesListItemProp) => {
                     padding: "25px",
                     color: "#363636",
                 }}>
-                <div className="articles-list-item__date"><CalendarIcon/> {`${Months[published.getMonth()]} ${published.getDay()}th, ${published.getFullYear()}`}</div>
+                <div className="articles-list-item__date"><CalendarIcon/> {`${Months[publishedDate.getMonth()]} ${publishedDate.getDay()}th, ${publishedDate.getFullYear()}`}</div>
                 <div className="articles-list-item__title">
                     <Highlighter
                         highlightClassName="articles-list-item__highlight"
