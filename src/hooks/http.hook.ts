@@ -1,30 +1,29 @@
+import { useState, useCallback } from "react";
 
 export const useHttp = ()  => {
 
-    const controllers = (new Map<string, AbortController>());
+    const [error, setError] = useState<null | string>(null),
+          [loading, setLoading] = useState<boolean>(false);
 
-    const abortRequestSafe = (key: string): void => {
-        controllers.get(key)?.abort?.();
-        console.log(`Cancelled ${key}`);
-    }
-
-    const getRequest = async <T>(url: string, signalKey: string = "" ): Promise<T> => {
-           
+    const getRequest = useCallback(async <T>(url: string): Promise<T> => {
+        setLoading(true);
         try {
-            const response = await fetch(url, { signal: controllers.get(signalKey)?.signal });
+            const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`Could not fetch with ${url}. Status: ${response.status} `);
             }
-            
+
             const data = await response.json();
+            setLoading(false);
             return data;
         } catch (e: any ) {
+            setLoading(false);
+            setError(e.message);
             throw e;
         }
-        
-    }
-    
-    
-    return {getRequest, abortRequestSafe};
+    }, []);
+
+    const clearError = useCallback(() => setError(null), []);
+
+    return {loading, error, getRequest, clearError};
 }
-        

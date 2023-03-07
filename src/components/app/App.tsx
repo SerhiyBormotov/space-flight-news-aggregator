@@ -1,7 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { createTheme, ThemeProvider, CssBaseline} from '@mui/material';
-import { Provider } from 'react-redux';
-import store from '../../store/store';
 
 import HomePage from '../pages/HomePage';
 import ArticlePage from '../pages/article-page/ArticlePage';
@@ -22,20 +20,18 @@ const theme = createTheme({
 
 const App: React.FC = () => {
   return (
-    <Provider store={store}>
-      <ThemeProvider theme = {theme}>
-        <CssBaseline/>
-        <Router 
-      //  basename='/projects/codebridge-test-task'
-        >
-          <Routes>
-            <Route path='/' element={<HomePage/>} errorElement={<Error/>}/>
-            <Route path='/:id' element={<ArticlePage/>} errorElement={<Error/>}/>                
-            <Route path="*" element={<Error/>}/>              
-          </Routes>
-        </Router>          
-      </ThemeProvider>
-    </Provider>
+    <ThemeProvider theme = {theme}>
+      <CssBaseline/>
+      <Router 
+    //  basename='/projects/codebridge-test-task'
+      >
+        <Routes>
+          <Route path='/' element={<HomePage/>} errorElement={<Error/>}/>
+          <Route path='/:id' element={<ArticlePage/>} errorElement={<Error/>}/>                
+          <Route path="*" element={<Error/>}/>              
+        </Routes>
+      </Router>          
+    </ThemeProvider>
   );
 }
 

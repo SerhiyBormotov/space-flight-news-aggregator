@@ -11,7 +11,7 @@ import './article-page.scss';
 
 const ArticlePage = () => {
     const {id} = useParams();
-    const {getOneArticle} = useAPIService();
+    const {getOneArticle, loading, error} = useAPIService();
     const [article, setArticle] = useState<ArticleInterface>();
 
     const articleLoad = (): void => {
@@ -24,7 +24,10 @@ const ArticlePage = () => {
 
     return (
         <>
-            {article ? <View {...article}/> : <Spinner/>}            
+            {loading && <Spinner/>}
+            {(error !== null) && <Error/>}
+            {(!(loading || error) && (!!article)) ? <View {...article}/> : null
+            }
         </>
     )
 }

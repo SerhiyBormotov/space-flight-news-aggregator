@@ -1,7 +1,6 @@
 import {useState} from 'react';
-import {Input, InputAdornment} from '@mui/material';
-import { useDispatch } from 'react-redux/es/exports';
-import { setKeywords } from './keywordBarSlice';
+import {Input} from '@mui/material';
+import {InputAdornment} from '@mui/material';
 
 import './keyword-bar.scss';
 
@@ -27,21 +26,22 @@ const SearchIcon = () => {
     )
 }
 
+type KeyWordBarProp = {
+    onKeywordsChange(words: string): void
+}
 
-const KeyWordBar= () => {
+const KeyWordBar= ({onKeywordsChange}:KeyWordBarProp) => {
     const [inputText, setInputText] = useState<string>("");
-    const dispatch = useDispatch();
 
     const handleKeywordChange = (event:React.ChangeEvent<HTMLInputElement>):void => {
         const inputText: string = event.target.value;
         setInputText(inputText);
-        dispatch(setKeywords(inputText));
-        
     };
 
     const handleKeyDown = (event:React.KeyboardEvent<HTMLInputElement>):void => {
         if (event.key === "Enter") {
-            event.preventDefault();            
+            event.preventDefault();
+            onKeywordsChange(inputText);
         }
     };
 
@@ -64,7 +64,7 @@ const KeyWordBar= () => {
                 onKeyDown = {handleKeyDown}
                 disableUnderline={true}
                 fullWidth={true} 
-                placeholder="Enter keywords"
+                title="Press Enter"                   
                 startAdornment = {
                     <InputAdornment position="start">
                             <SearchIcon />

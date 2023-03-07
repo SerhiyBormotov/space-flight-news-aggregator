@@ -1,42 +1,51 @@
-import { useEffect} from "react";
+import { useEffect, useState} from "react";
 import { Grid } from "@mui/material";
 import ArticlesListItem from "../articles-list-item/ArticlesListItem";
 import Spinner from "../spinner/Spinner";
 import Error from "../error/Error";
-import { useDispatch, useSelector } from "react-redux";
+import useAPIService from "../../services/APIService";
 import { ArticleInterface } from "../../services/APIService";
-import {  RootState } from "../../store/store";
-import { fetchArticles, incrOffset } from "./articlesListSlice";
 
 import './articles-list.scss';
-import { Action, ThunkDispatch } from "@reduxjs/toolkit";
 
+type ArticlesListProp = {
+    keywords: Array<string>
+}
 
-const ArticlesList = () => {
-    const data = useSelector<RootState, ArticleInterface[]>( state => state.articles.data);
-    const keywords = useSelector<RootState, string[]>( state => state.keywords.keywords);
-    const count = useSelector<RootState, number>( state => state.articles.count);
-    const offset = useSelector<RootState, number>( state => state.articles.offset);
-    const dataError = useSelector<RootState, boolean>( state => state.articles.dataError);
-    const dataLoading = useSelector<RootState, boolean>( state => state.articles.dataLoading);
-    const dispatch: ThunkDispatch<RootState, void, Action> = useDispatch();
+const ArticlesList = ({keywords}: ArticlesListProp) => {
     
-   
+    const [data, setData] = useState<Array<ArticleInterface>>([]);
+    const [count, setCount] = useState<number>(0); 
+    const [offset, setOffset] = useState<number>(0);
+    const {loading, error, getArticles, getArticlesCount} = useAPIService();
+    
+    const changeData = (words:Array<string>): void => {
+        getArticles(words).then(data => {
+            if (words.length === 0) {
+                getArticlesCount().then(setCount);
+            } else {
+                setCount(data.length); 
+            } 
+            setData(data);
+            setOffset(0);            
+                     
+        });
+    }   
 
     const handleScroll = (): void =>  {
         const currentPos = window.scrollY + window.innerHeight;
         if (document.body.scrollHeight - currentPos < 100) {
-            dispatch(incrOffset());
+            setOffset(offset => offset + 6);
           }            
     }
 
     useEffect(() => {
-        dispatch(fetchArticles(keywords));
+        changeData(keywords);
         window.addEventListener('scroll', handleScroll);
         return () => {
             window.removeEventListener('scroll', handleScroll);
         }
-    }, [keywords, dispatch]);
+    }, [keywords]);
 
      
     const content:React.ReactNode = data.slice(0, 6 + offset).map(item => {
@@ -50,12 +59,12 @@ const ArticlesList = () => {
     return (
         <>
             <div className="articles-list__summary-bar">
-                {dataLoading && 'Loading...'}
-                {(dataError !== null) && 'Error'}
-                {!(dataLoading || dataError) && `Results: ${count}`}
+                {loading && 'Loading...'}
+                {(error !== null) && 'Error'}
+                {!(loading || error) && `Results: ${count}`}
             </div>
-            {(dataError !== null) && <Error/>}
-            {(!(dataError || dataLoading) && (data.length > 0)) ?
+            {(error !== null) && <Error/>}
+            {(!(error || loading) && (data.length > 0)) ?
             <Grid 
                 container 
                 spacing={4}
@@ -66,7 +75,7 @@ const ArticlesList = () => {
                     {content}
             </Grid> : null
             }
-            {dataLoading && <Spinner/>}
+            {loading && <Spinner/>}
         </>
     )
 };
